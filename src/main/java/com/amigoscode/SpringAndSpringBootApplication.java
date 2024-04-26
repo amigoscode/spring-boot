@@ -11,6 +11,7 @@ public class SpringAndSpringBootApplication {
                 SpringAndSpringBootApplication.class,
                 args
         );
+        System.out.println("Hello World!");
     }
 
 }
