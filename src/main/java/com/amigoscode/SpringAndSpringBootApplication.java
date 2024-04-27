@@ -5,6 +5,7 @@ import jakarta.servlet.ServletResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -99,12 +100,13 @@ public class SpringAndSpringBootApplication {
     }
 
     @GetMapping("{id}")
-    public Optional<Person> getPersonById(
+    public ResponseEntity<Optional<Person>> getPersonById(
             @PathVariable("id") Integer id
     ) {
-        return people.stream()
-                .filter(person -> person.id.equals(id))
+        Optional<Person> person = people.stream()
+                .filter(p -> p.id.equals(id))
                 .findFirst();
+        return ResponseEntity.ok().body(person);
     }
 
     @DeleteMapping("{id}")
