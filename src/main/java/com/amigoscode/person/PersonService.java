@@ -1,5 +1,7 @@
 package com.amigoscode.person;
 import com.amigoscode.SortingOrder;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Service
 public class PersonService {
 
     private final PersonRepository personRepository;
