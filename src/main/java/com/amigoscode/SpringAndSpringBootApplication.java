@@ -1,10 +1,7 @@
 package com.amigoscode;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,27 +66,12 @@ public class SpringAndSpringBootApplication {
 
     @GetMapping
     public List<Person> getPersons(
-            HttpMethod httpMethod,
-            ServletRequest request,
-            ServletResponse response,
-            @RequestHeader("Content-Type") String contentType,
             @RequestParam(
                     value = "sort",
                     required = false,
                     defaultValue = "ASC"
-            ) SortingOder sort,
-            @RequestParam(
-                    value = "limit",
-                    required = false,
-                    defaultValue = "10"
-            ) Integer limit) {
+            ) SortingOder sort) {
         if (sort == SortingOder.ASC) {
-
-            System.out.println(httpMethod);
-            System.out.println(request.getLocalAddr());
-            System.out.println(response.isCommitted());
-            System.out.println(contentType);
-
             return people.stream()
                     .sorted(Comparator.comparing(Person::id))
                     .collect(Collectors.toList());
