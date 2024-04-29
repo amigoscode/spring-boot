@@ -50,7 +50,8 @@ public class PersonService {
                         personRepository.getIdCounter().incrementAndGet(),
                         person.name(),
                         person.age(),
-                        person.gender()
+                        person.gender(),
+                        person.email()
                 )
         );
     }
@@ -70,7 +71,21 @@ public class PersonService {
                                 p.id(),
                                 request.name(),
                                 p.age(),
-                                p.gender()
+                                p.gender(),
+                                p.email()
+
+                        );
+                        personRepository.getPeople().set(index, person);
+                    }
+                    if (request.email() != null &&
+                            !request.email().isEmpty() &&
+                            !request.email().equals(p.email())) {
+                        Person person = new Person(
+                                p.id(),
+                                p.name(),
+                                p.age(),
+                                p.gender(),
+                                request.email()
 
                         );
                         personRepository.getPeople().set(index, person);
@@ -81,7 +96,8 @@ public class PersonService {
                                 p.id(),
                                 p.name(),
                                 request.age(),
-                                p.gender()
+                                p.gender(),
+                                p.email()
 
                         );
                         personRepository.getPeople().set(index, person);

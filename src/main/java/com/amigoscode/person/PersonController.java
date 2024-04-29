@@ -66,7 +66,7 @@ public class PersonController {
     }
 
     @PutMapping("{id}")
-    public void updatePerson(@PathVariable("id") Integer id,
+    public void updatePerson(@Valid @Positive @PathVariable("id") Integer id,
                              @RequestBody PersonUpdateRequest request) {
         personService.updatePerson(id, request);
     }

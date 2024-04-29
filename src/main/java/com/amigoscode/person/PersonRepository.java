@@ -21,7 +21,8 @@ public class PersonRepository {
                         idCounter.incrementAndGet(),
                         "John",
                         20,
-                        Gender.MALE
+                        Gender.MALE,
+                        "john@amigoscode.com"
                 )
         );
         people.add(
@@ -29,14 +30,17 @@ public class PersonRepository {
                         idCounter.incrementAndGet(),
                         "Mariam",
                         18,
-                        Gender.FEMALE)
+                        Gender.FEMALE,
+                        "mariam@amigoscode.com"
+                )
         );
         people.add(
                 new Person(
                         idCounter.incrementAndGet(),
                         "Samba",
                         30,
-                        Gender.MALE)
+                        Gender.MALE,
+                        "samba@amigoscode.com")
         );
     }
 
