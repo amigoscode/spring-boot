@@ -44,7 +44,7 @@ public class PersonService {
                 .removeIf(person -> person.id().equals(id));
     }
 
-    public void addPerson(Person person) {
+    public void addPerson(NewPersonRequest person) {
         personRepository.getPeople().add(
                 new Person(
                         personRepository.getIdCounter().incrementAndGet(),
