@@ -67,53 +67,28 @@ public class PersonService {
 
     public void updatePerson(Integer id,
                              PersonUpdateRequest request) {
-        Person p = fakePersonRepository.getPeople().stream()
-                .filter(person -> person.getId().equals(id))
-                .findFirst()
+        Person person = personRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Person with id: " + id + " does not exists")
                 );
 
-        var index = fakePersonRepository.getPeople().indexOf(p);
-
         if (request.name() != null &&
                 !request.name().isEmpty() &&
-                !request.name().equals(p.getName())) {
-            Person person = new Person(
-                    p.getId(),
-                    request.name(),
-                    p.getAge(),
-                    p.getGender(),
-                    p.getEmail()
-
-            );
-            fakePersonRepository.getPeople().set(index, person);
+                !request.name().equals(person.getName())) {
+            person.setName(request.name());
+            personRepository.save(person);
         }
         if (request.email() != null &&
                 !request.email().isEmpty() &&
-                !request.email().equals(p.getEmail())) {
-            Person person = new Person(
-                    p.getId(),
-                    p.getName(),
-                    p.getAge(),
-                    p.getGender(),
-                    request.email()
-
-            );
-            fakePersonRepository.getPeople().set(index, person);
+                !request.email().equals(person.getEmail())) {
+            person.setEmail(request.email());
+            personRepository.save(person);
         }
         if (request.age() != null
-                && !request.age().equals(p.getAge())) {
-            Person person = new Person(
-                    p.getId(),
-                    p.getName(),
-                    request.age(),
-                    p.getGender(),
-                    p.getEmail()
-
-            );
-            fakePersonRepository.getPeople().set(index, person);
+                && !request.age().equals(person.getAge())) {
+            person.setAge(request.age());
+            personRepository.save(person);
         }
 
     }
