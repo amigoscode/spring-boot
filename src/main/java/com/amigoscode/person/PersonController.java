@@ -39,10 +39,10 @@ public class PersonController {
 
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<Person>> getPersonById(
+    public ResponseEntity<Person> getPersonById(
             @Valid @Positive @PathVariable("id") Integer id
     ) {
-        Optional<Person> person = personService.getPersonById(id);
+        Person person = personService.getPersonById(id);
         return ResponseEntity.ok().body(person);
     }
 

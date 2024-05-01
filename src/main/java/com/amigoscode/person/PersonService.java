@@ -1,12 +1,11 @@
 package com.amigoscode.person;
+
 import com.amigoscode.SortingOrder;
-import org.springframework.stereotype.Component;
+import com.amigoscode.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +18,7 @@ public class PersonService {
     }
 
     public List<Person> getPeople(
-           SortingOrder sort
+            SortingOrder sort
     ) {
         if (sort == SortingOrder.ASC) {
             return personRepository.getPeople().stream()
@@ -32,10 +31,13 @@ public class PersonService {
     }
 
 
-    public Optional<Person> getPersonById(Integer id) {
+    public Person getPersonById(Integer id) {
         return personRepository.getPeople().stream()
                 .filter(p -> p.id().equals(id))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Person with id: " + id + " does not exists"));
 
     }
 
