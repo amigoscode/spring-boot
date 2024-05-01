@@ -3,42 +3,33 @@ package com.amigoscode.person;
 import com.amigoscode.SortingOrder;
 import com.amigoscode.exception.DuplicateResourceException;
 import com.amigoscode.exception.ResourceNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
 public class PersonService {
 
+    private final FakePersonRepository fakePersonRepository;
     private final PersonRepository personRepository;
 
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(FakePersonRepository fakePersonRepository,
+                         PersonRepository personRepository) {
+        this.fakePersonRepository = fakePersonRepository;
         this.personRepository = personRepository;
     }
 
     public List<Person> getPeople(
             SortingOrder sort
     ) {
-        if (sort == SortingOrder.ASC) {
-            return personRepository.getPeople().stream()
-                    .sorted(Comparator.comparing(Person::id))
-                    .collect(Collectors.toList());
-        }
-        return personRepository.getPeople().stream()
-                .sorted(Comparator.comparing(Person::id).reversed())
-                .collect(Collectors.toList());
+        return personRepository.findAll();
     }
 
-
     public Person getPersonById(Integer id) {
-        return personRepository.getPeople().stream()
-                .filter(p -> p.id().equals(id))
-                .findFirst()
+        return personRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Person with id: " + id + " does not exists"));
@@ -46,84 +37,83 @@ public class PersonService {
     }
 
     public void deletePersonById(Integer id) {
-        Person person = personRepository.getPeople().stream()
-                .filter(p -> p.id().equals(id))
-                .findFirst()
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Person with id: " + id + " does not exists"));
-        personRepository.getPeople().remove(person);
+        boolean existsById = personRepository.existsById(id);
+        if (!existsById) {
+            throw new ResourceNotFoundException(
+                    "Person with id: " + id + " does not exists"
+            );
+        }
+        personRepository.deleteById(id);
     }
 
-    public void addPerson(NewPersonRequest person) {
-        if (person.email() != null && !person.email().isEmpty()) {
-            boolean exists = personRepository.getPeople().stream()
-                    .anyMatch(p -> p.email().equalsIgnoreCase(person.email()));
+    public void addPerson(NewPersonRequest personRequest) {
+        if(personRequest.email() != null && !personRequest.email().isEmpty()) {
+            boolean exists = personRepository.existsByEmail(personRequest.email());
             if (exists) {
                 throw new DuplicateResourceException("email taken");
             }
         }
 
-        personRepository.getPeople().add(
-                new Person(
-                        personRepository.getIdCounter().incrementAndGet(),
-                        person.name(),
-                        person.age(),
-                        person.gender(),
-                        person.email()
-                )
+        Person person = new Person(
+                personRequest.name(),
+                personRequest.age(),
+                personRequest.gender(),
+                personRequest.email()
         );
+
+        personRepository.save(person);
+
     }
 
     public void updatePerson(Integer id,
                              PersonUpdateRequest request) {
-        Person p = personRepository.getPeople().stream()
-                .filter(person -> person.id().equals(id))
+        Person p = fakePersonRepository.getPeople().stream()
+                .filter(person -> person.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "Person with id: " + id + " does not exists")
                 );
 
-        var index = personRepository.getPeople().indexOf(p);
+        var index = fakePersonRepository.getPeople().indexOf(p);
 
         if (request.name() != null &&
                 !request.name().isEmpty() &&
-                !request.name().equals(p.name())) {
+                !request.name().equals(p.getName())) {
             Person person = new Person(
-                    p.id(),
+                    p.getId(),
                     request.name(),
-                    p.age(),
-                    p.gender(),
-                    p.email()
+                    p.getAge(),
+                    p.getGender(),
+                    p.getEmail()
 
             );
-            personRepository.getPeople().set(index, person);
+            fakePersonRepository.getPeople().set(index, person);
         }
         if (request.email() != null &&
                 !request.email().isEmpty() &&
-                !request.email().equals(p.email())) {
+                !request.email().equals(p.getEmail())) {
             Person person = new Person(
-                    p.id(),
-                    p.name(),
-                    p.age(),
-                    p.gender(),
+                    p.getId(),
+                    p.getName(),
+                    p.getAge(),
+                    p.getGender(),
                     request.email()
 
             );
-            personRepository.getPeople().set(index, person);
+            fakePersonRepository.getPeople().set(index, person);
         }
         if (request.age() != null
-                && !request.age().equals(p.age())) {
+                && !request.age().equals(p.getAge())) {
             Person person = new Person(
-                    p.id(),
-                    p.name(),
+                    p.getId(),
+                    p.getName(),
                     request.age(),
-                    p.gender(),
-                    p.email()
+                    p.getGender(),
+                    p.getEmail()
 
             );
-            personRepository.getPeople().set(index, person);
+            fakePersonRepository.getPeople().set(index, person);
         }
 
     }
