@@ -1,54 +1,8 @@
 package com.amigoscode.person;
 
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+public interface PersonRepository extends JpaRepository<Person, Integer> {
 
-@Repository
-public class PersonRepository {
-
-    private final AtomicInteger idCounter =
-            new AtomicInteger(0);
-
-    private final List<Person> people = new ArrayList<>();
-
-    {
-        people.add(
-                new Person(
-                        idCounter.incrementAndGet(),
-                        "John",
-                        20,
-                        Gender.MALE,
-                        "john@amigoscode.com"
-                )
-        );
-        people.add(
-                new Person(
-                        idCounter.incrementAndGet(),
-                        "Mariam",
-                        18,
-                        Gender.FEMALE,
-                        "mariam@amigoscode.com"
-                )
-        );
-        people.add(
-                new Person(
-                        idCounter.incrementAndGet(),
-                        "Samba",
-                        30,
-                        Gender.MALE,
-                        "samba@amigoscode.com")
-        );
-    }
-
-    public AtomicInteger getIdCounter() {
-        return idCounter;
-    }
-
-    public List<Person> getPeople() {
-        return people;
-    }
+    boolean existsByEmail(String email);
 }
