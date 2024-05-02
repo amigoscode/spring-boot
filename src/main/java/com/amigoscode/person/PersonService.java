@@ -25,7 +25,12 @@ public class PersonService {
     public List<Person> getPeople(
             SortingOrder sort
     ) {
-        return personRepository.findAll();
+        return personRepository.findAll(
+                Sort.by(
+                        Sort.Direction.valueOf(sort.name()),
+                        "id"
+                )
+        );
     }
 
     public Person getPersonById(Integer id) {
